@@ -2,13 +2,12 @@ name: Gold News Bot
 
 on:
   schedule:
-    # All times UTC (Dubai = UTC+4)
-    - cron: '0 5 * * *'   # 09:00 Dubai - Daily digest
-    - cron: '0 6 * * *'   # 10:00 Dubai - Morning price
-    - cron: '0 11 * * *'  # 15:00 Dubai - Afternoon price
-    - cron: '0 17 * * *'  # 21:00 Dubai - Evening price
-    - cron: '*/30 * * * *' # Every 30 min - Breaking news
-  workflow_dispatch:       # Manual trigger button in GitHub UI
+    - cron: '0 5 * * *'    # 09:00 Dubai - Daily digest
+    - cron: '0 6 * * *'    # 10:00 Dubai - Morning price
+    - cron: '0 11 * * *'   # 15:00 Dubai - Afternoon price
+    - cron: '0 17 * * *'   # 21:00 Dubai - Evening price
+    - cron: '0 */2 * * *'  # Every 2 hours - Breaking news
+  workflow_dispatch:
 
 jobs:
   run-bot:
@@ -21,16 +20,14 @@ jobs:
       - run: pip install -r requirements.txt
       - name: Run bot
         env:
-          GOLD_API_KEY:    ${{ secrets.GOLD_API_KEY }}
-          MARKETAUX_KEY:   ${{ secrets.MARKETAUX_KEY }}
-          TELEGRAM_TOKEN:  ${{ secrets.TELEGRAM_TOKEN }}
+          GOLD_API_KEY:     ${{ secrets.GOLD_API_KEY }}
+          MARKETAUX_KEY:    ${{ secrets.MARKETAUX_KEY }}
+          TELEGRAM_TOKEN:   ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          RUN_TYPE: >-
-            ${{ 
-              github.event.schedule == '0 5 * * *' && 'digest' ||
-              github.event.schedule == '0 6 * * *' && 'morning' ||
-              github.event.schedule == '0 11 * * *' && 'afternoon' ||
-              github.event.schedule == '0 17 * * *' && 'evening' ||
-              'news'
-            }}
+          RUN_TYPE: ${{ 
+            github.event.schedule == '0 5 * * *' && 'digest' ||
+            github.event.schedule == '0 6 * * *' && 'morning' ||
+            github.event.schedule == '0 11 * * *' && 'afternoon' ||
+            github.event.schedule == '0 17 * * *' && 'evening' ||
+            'news' }}
         run: python bot.py
