@@ -13,8 +13,8 @@ DUBAI_TZ  = pytz.timezone("Asia/Dubai")
 
 def send_telegram(msg):
     requests.post(
-        f"https://api.telegram.org/bot{8666914525:AAGGV-72NyVvHd80_BUvJsTf17knbDYgdHQ}/sendMessage",
-        json={"-5025795531": TELEGRAM_CHAT, "text": msg, "parse_mode": "HTML"},
+        f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage",
+        json={"chat_id": TELEGRAM_CHAT, "text": msg, "parse_mode": "HTML"},
         timeout=10
     )
 
